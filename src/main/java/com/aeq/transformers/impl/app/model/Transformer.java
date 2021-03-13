@@ -19,8 +19,10 @@ public class Transformer {
     @Column(name="FIREPOWER")
     private Integer firePower;
     private Integer skill;
-    @Column(name="OVERALLRATING")
-    private Integer overallRating;
+
+    public Integer getOverallRating() {
+        return (this.strength + this.intelligence + this.speed + this.endurance + this.firePower );
+    }
 
     public Long getId() {
         return id;
@@ -110,11 +112,4 @@ public class Transformer {
         this.skill = skill;
     }
 
-    public Integer getOverallRating() {
-        return overallRating;
-    }
-
-    public void setOverallRating(Integer overallRating) {
-        this.overallRating = overallRating;
-    }
 }

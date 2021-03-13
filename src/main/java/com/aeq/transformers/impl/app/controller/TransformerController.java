@@ -12,31 +12,31 @@ import java.util.List;
 public class TransformerController {
 
     @Autowired
-    private TransformerService ts;
+    private TransformerService transformerService;
 
     @PostMapping
-    public void createTransformer(Transformer transformer){
-      ts.createTransformer(transformer);
+    public void createTransformer(@RequestBody Transformer transformer){
+        transformerService.createTransformer(transformer);
     }
 
     @PutMapping
-    public void updateTransformer(Transformer transformer){
-        ts.updateTransformer(transformer);
+    public void updateTransformer(@RequestBody Transformer transformer){
+        transformerService.updateTransformer(transformer);
     }
 
     @DeleteMapping
-    public void deleteTransformer(Transformer transformer){
-        ts.deleteTransformer(transformer);
+    public void deleteTransformer(@RequestBody Transformer transformer){
+        transformerService.deleteTransformer(transformer);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTransformerById(@PathVariable("id") Long id) {
-        ts.deleteTransformerById(id);
+        transformerService.deleteTransformerById(id);
     }
 
     @GetMapping
     public List<Transformer> getAllTransformers() {
-        return ts.getAllTransformers();
+        return transformerService.getAllTransformers();
     }
 
 }

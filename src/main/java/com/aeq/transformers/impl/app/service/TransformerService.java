@@ -13,27 +13,27 @@ import java.util.List;
 public class TransformerService {
 
     @Autowired
-    private TransformerRepository tr;
+    private TransformerRepository transformerRepo;
 
     public void createTransformer(Transformer transformer){
-        tr.save(transformer);
+        transformerRepo.save(transformer);
     }
 
     public void updateTransformer(Transformer transformer){
-        tr.save(transformer);
+        transformerRepo.save(transformer);
     }
 
     public void deleteTransformer(Transformer transformer){
-        tr.delete(transformer);
+        transformerRepo.delete(transformer);
     }
 
     public void deleteTransformerById(Long transformerId){
-        tr.deleteById(transformerId);
+        transformerRepo.deleteById(transformerId);
     }
 
     public List<Transformer> getAllTransformers() {
         List<Transformer> transformerList = new ArrayList<>();
-        tr.findAll().forEach(transformer -> transformerList.add(transformer));
+        transformerRepo.findAll().forEach(transformer -> transformerList.add(transformer));
         return transformerList;
     }
 
