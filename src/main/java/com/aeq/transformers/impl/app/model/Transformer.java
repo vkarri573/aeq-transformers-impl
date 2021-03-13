@@ -1,9 +1,11 @@
 package com.aeq.transformers.impl.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
-public class Transformer {
+public class Transformer implements Comparable<Transformer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -112,4 +114,8 @@ public class Transformer {
         this.skill = skill;
     }
 
+    @JsonIgnore
+    public int compareTo(Transformer other) {
+        return other.rank - this.rank;
+    }
 }

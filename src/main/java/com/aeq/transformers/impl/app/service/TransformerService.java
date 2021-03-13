@@ -32,9 +32,9 @@ public class TransformerService {
     }
 
     public List<Transformer> getAllTransformers() {
-        List<Transformer> transformerList = new ArrayList<>();
-        transformerRepo.findAll().forEach(transformer -> transformerList.add(transformer));
-        return transformerList;
+        List<Transformer> transformersList = new ArrayList<>();
+        transformerRepo.findAll().forEach(transformer -> transformersList.add(transformer));
+        return transformersList;
     }
 
 }
