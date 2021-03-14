@@ -2,8 +2,10 @@ package com.aeq.transformers.impl.app.service;
 
 import com.aeq.transformers.impl.app.model.*;
 import com.aeq.transformers.impl.app.repository.BattleRepository;
-import com.aeq.transformers.impl.app.util.executor.BattleRuleExecutor;
-import com.aeq.transformers.impl.app.util.executor.BattleSpecialRuleExecutor;
+import com.aeq.transformers.impl.app.rule.executor.BattleRuleExecutor;
+import com.aeq.transformers.impl.app.rule.executor.BattleSpecialRuleExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -25,6 +27,7 @@ public class BattleService {
     private BattleSpecialRuleExecutor specialRuleExecutor;
     @Autowired
     private BattleRuleExecutor basicRuleExecutor;
+    private Logger LOG = LoggerFactory.getLogger(BattleService.class);
 
     public List<Transformer> getTransformersByIds(List<Long> ids) {
         List<Transformer> transformersList = new ArrayList<>();
@@ -32,87 +35,107 @@ public class BattleService {
         return transformersList;
     }
 
-    public FinalBattleResult conductFight(List<Long> ids) {
-        BattleSummary battleSummary = new BattleSummary();
-        List<Transformer> transformersList = getTransformersByIds(ids);
+    public FinalGameResult conductGame(List<Long> transformerIds) throws Exception {
+        GameSummary gameSummary = new GameSummary();
+        List<Transformer> transformersList = getTransformersByIds(transformerIds);
 
-        List<Transformer> autobots = transformersList.stream().filter(e -> TEAM_A.equals(e.getName())).collect(Collectors.toList());
-        List<Transformer> decepticons = transformersList.stream().filter(e -> TEAM_D.equals(e.getName())).collect(Collectors.toList());
+        LOG.info("Transformers size: "+transformersList.size());
+        List<Transformer> autobots = transformersList.stream().filter(e -> TEAM_A.equals(e.getTeam())).collect(Collectors.toList());
+        List<Transformer> decepticons = transformersList.stream().filter(e -> TEAM_D.equals(e.getTeam())).collect(Collectors.toList());
 
         Collections.sort(autobots);
         Collections.sort(decepticons);
 
-        battleSummary = startFight(autobots, decepticons, battleSummary);
+        LOG.info("Autobots size: "+autobots.size());
+        LOG.info("Decepticons size: "+decepticons.size());
 
-        return evaluateFinalBattleSummary(battleSummary);
+        gameSummary.setAutobots(autobots);
+        gameSummary.setDecepticons(decepticons);
+
+        gameSummary = startGame(autobots, decepticons, gameSummary);
+
+        return evaluateGameSummary(gameSummary);
     }
 
-   public BattleSummary startFight(List<Transformer> autobots , List<Transformer> decepticons, BattleSummary battleSummary) {
+   public GameSummary startGame(List<Transformer> autobots , List<Transformer> decepticons, GameSummary gameSummary) throws Exception {
        int noOfBattles = calculateNumberOfBattles(autobots, decepticons);
-       battleSummary.setNoOfBattles(noOfBattles);
+       LOG.info("Number of battles: "+noOfBattles);
+       gameSummary.setNoOfBattles(noOfBattles);
 
        Battle battle = null;
        int battleCounter = 0;
        while(battleCounter < noOfBattles) {
+           battle = new Battle();
            battle.setAutobot(autobots.get(battleCounter));
            battle.setDecepticon(decepticons.get(battleCounter));
 
+           LOG.info("Battle between Autobot: "+battle.getAutobot().getName()+" and Decepticon: "+battle.getDecepticon().getName());
            battle = specialRuleExecutor.executeBattleSpecialRules(battle);
 
            if(isBattleResultEmpty(battle))
               battle = basicRuleExecutor.executeBattleBasicRules(battle);
 
-           evaluateBattleResult(battle, battleSummary);
+           evaluateBattleResult(battle, gameSummary);
            battleCounter++;
        }
-       return battleSummary;
+       return gameSummary;
    }
 
-   private void evaluateBattleResult(Battle battle, BattleSummary battleSummary) {
+   private void evaluateBattleResult(Battle battle, GameSummary gameSummary) {
         BattleResult battleResult = battle.getBattleResult();
-        if(battleResult == WINNER_AUTOBOT)
-            battleSummary.getWinnerAutobots().add(battle.getAutobot());
-        else if(battleResult == WINNER_DECEPTICON)
-            battleSummary.getWinnerDecepticons().add(battle.getDecepticon());
-        else if(battleResult == INTERRUPTED)
-            throw new NullPointerException("Interrupted");
-            // Throw Interrupted exception
+        if(battleResult == WINNER_AUTOBOT) {
+            LOG.info("Battle winner is Autobot: "+battle.getAutobot().getName());
+            gameSummary.getWinnerAutobots().add(battle.getAutobot());
+        }
+        else if(battleResult == WINNER_DECEPTICON) {
+            LOG.info("Battle winner is Decepticon: "+battle.getDecepticon().getName());
+            gameSummary.getWinnerDecepticons().add(battle.getDecepticon());
+        } else {
+            LOG.info("Battle tied, both transformers are destroyed");
+            battle.setBattleResult(TIE);
+        }
    }
 
-   public FinalBattleResult evaluateFinalBattleSummary(BattleSummary battleSummary) {
-       FinalBattleResult finalBattleResult = new FinalBattleResult();
-       finalBattleResult.setNumberOfBattles(battleSummary.getNoOfBattles());
+   public FinalGameResult evaluateGameSummary(GameSummary gameSummary) {
+        LOG.info("Evaluate game summary and prepare final result");
+       FinalGameResult finalGameResult = new FinalGameResult();
+       finalGameResult.setNumberOfBattles(gameSummary.getNoOfBattles());
 
        List<String> winnerMembersOfWinningTeam = new ArrayList<>();
        List<String> survivingMembersOfLosingTeam = new ArrayList<>();
 
-       if(battleSummary.getWinnerAutobots().size() > battleSummary.getWinnerDecepticons().size()) {
-           finalBattleResult.setWinningTeam(TEAM_AUTOBOTS_STR);
-           finalBattleResult.setLosingTeam(TEAM_DECEPTICONS_STR);
+       // Compare Autobots winning size and Decepticons winning size
+       if(gameSummary.getWinnerAutobots().size() > gameSummary.getWinnerDecepticons().size()) {
+           LOG.info("Autobots team has more number of winners, so winning team is: Autobots");
+           finalGameResult.setWinningTeam(TEAM_AUTOBOTS_STR);
+           finalGameResult.setLosingTeam(TEAM_DECEPTICONS_STR);
 
-           battleSummary.getWinnerAutobots().forEach(e -> winnerMembersOfWinningTeam.add(e.getName()));
+           gameSummary.getWinnerAutobots().forEach(transformer -> winnerMembersOfWinningTeam.add(transformer.getName()));
 
+           gameSummary.getWinnerDecepticons().forEach(transformer -> survivingMembersOfLosingTeam.add(transformer.getName()));
+           //Derive skipped transformers from losing team who didn't have fight.
+           survivingMembersOfLosingTeam.addAll(deriveDefaultSkippedSurvivors(gameSummary.getNoOfBattles(), gameSummary.getDecepticons()));
 
-           battleSummary.getWinnerDecepticons().forEach(e -> survivingMembersOfLosingTeam.add(e.getName()));
-           survivingMembersOfLosingTeam.addAll(deriveDefaultSkippedSurvivors(battleSummary.getNoOfBattles(), battleSummary.getDecepticons()));
+       } else if(gameSummary.getWinnerDecepticons().size() > gameSummary.getWinnerAutobots().size()) {
+           LOG.info("Decepticons team has more number of winners, so winning team is: Decepticons");
+           finalGameResult.setWinningTeam(TEAM_DECEPTICONS_STR);
+           finalGameResult.setLosingTeam(TEAM_AUTOBOTS_STR);
 
-       } else if(battleSummary.getWinnerDecepticons().size() > battleSummary.getWinnerAutobots().size()) {
-           finalBattleResult.setWinningTeam(TEAM_DECEPTICONS_STR);
-           finalBattleResult.setLosingTeam(TEAM_AUTOBOTS_STR);
+           gameSummary.getWinnerDecepticons().forEach(e -> winnerMembersOfWinningTeam.add(e.getName()));
 
-           battleSummary.getWinnerDecepticons().forEach(e -> winnerMembersOfWinningTeam.add(e.getName()));
-
-           battleSummary.getWinnerAutobots().forEach(e -> survivingMembersOfLosingTeam.add(e.getName()));
-           survivingMembersOfLosingTeam.addAll(deriveDefaultSkippedSurvivors(battleSummary.getNoOfBattles(), battleSummary.getWinnerAutobots()));
+           gameSummary.getWinnerAutobots().forEach(e -> survivingMembersOfLosingTeam.add(e.getName()));
+           //Derive skipped transformers from losing team who didn't have fight.
+           survivingMembersOfLosingTeam.addAll(deriveDefaultSkippedSurvivors(gameSummary.getNoOfBattles(), gameSummary.getAutobots()));
        } else {
-           finalBattleResult.setWinningTeam(NONE_TIE_STR);
-           finalBattleResult.setLosingTeam(NONE_TIE_STR);
+           LOG.info("Both teams have equal number of winners (or) No Battles");
+           finalGameResult.setWinningTeam(NONE);
+           finalGameResult.setLosingTeam(NONE);
        }
 
-       finalBattleResult.setWinnerMembersOfWinningTeam(winnerMembersOfWinningTeam);
-       finalBattleResult.setSurvivingMembersOfLosingTeam(survivingMembersOfLosingTeam);
+       finalGameResult.setWinnerMembersOfWinningTeam(winnerMembersOfWinningTeam);
+       finalGameResult.setSurvivingMembersOfLosingTeam(survivingMembersOfLosingTeam);
 
-       return finalBattleResult;
+       return finalGameResult;
    }
 
    private List<String> deriveDefaultSkippedSurvivors(int noOfBattles, List<Transformer> loosingTeam) {

@@ -1,7 +1,6 @@
 package com.aeq.transformers.impl.app.controller;
 
-import com.aeq.transformers.impl.app.model.FinalBattleResult;
-import com.aeq.transformers.impl.app.model.Transformer;
+import com.aeq.transformers.impl.app.model.FinalGameResult;
 import com.aeq.transformers.impl.app.service.BattleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,7 @@ public class BattleController {
     private BattleService battleService;
 
     @GetMapping
-    public FinalBattleResult battle(@RequestParam List<Long> ids) {
-        return battleService.conductFight(ids);
+    public FinalGameResult conductGame(@RequestParam List<Long> transformerIds) throws Exception {
+        return battleService.conductGame(transformerIds);
     }
 }

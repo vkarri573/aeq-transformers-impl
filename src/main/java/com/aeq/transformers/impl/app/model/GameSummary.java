@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class BattleSummary {
+public class GameSummary {
     private List<Transformer> autobots;
     private List<Transformer> decepticons;
     private int noOfBattles;

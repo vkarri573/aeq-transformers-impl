@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class FinalBattleResult {
+public class FinalGameResult {
 
     private int numberOfBattles;
     private String winningTeam;

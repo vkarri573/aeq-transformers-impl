@@ -8,5 +8,5 @@ public class BattleConstants {
     public static final String TEAM_D = "D";
     public static final String TEAM_AUTOBOTS_STR = "Autobots";
     public static final String TEAM_DECEPTICONS_STR = "Decepticons";
-    public static final String NONE_TIE_STR = "NONE - BATTLE TIED";
+    public static final String NONE = "NONE";
 }
