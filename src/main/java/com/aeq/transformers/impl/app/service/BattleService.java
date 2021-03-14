@@ -35,7 +35,7 @@ public class BattleService {
         return transformersList;
     }
 
-    public FinalGameResult conductGame(List<Long> transformerIds) throws Exception {
+    public FinalGameResult conductGame(List<Long> transformerIds) {
         GameSummary gameSummary = new GameSummary();
         List<Transformer> transformersList = getTransformersByIds(transformerIds);
 
@@ -57,7 +57,7 @@ public class BattleService {
         return evaluateGameSummary(gameSummary);
     }
 
-   public GameSummary startGame(List<Transformer> autobots , List<Transformer> decepticons, GameSummary gameSummary) throws Exception {
+   public GameSummary startGame(List<Transformer> autobots , List<Transformer> decepticons, GameSummary gameSummary) {
        int noOfBattles = calculateNumberOfBattles(autobots, decepticons);
        LOG.info("Number of battles: "+noOfBattles);
        gameSummary.setNoOfBattles(noOfBattles);

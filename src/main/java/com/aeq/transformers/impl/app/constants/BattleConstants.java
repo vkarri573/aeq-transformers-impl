@@ -9,4 +9,7 @@ public class BattleConstants {
     public static final String TEAM_AUTOBOTS_STR = "Autobots";
     public static final String TEAM_DECEPTICONS_STR = "Decepticons";
     public static final String NONE = "NONE";
+    public static final String STATUS_TRANSFORMER_CREATED = "{\"status\":\"Transformer created\"}";
+    public static final String STATUS_TRANSFORMER_UPDATED = "{\"status\":\"Transformer updated\"}";
+    public static final String STATUS_TRANSFORMER_DELETED = "{\"status\":\"Transformer deleted\"}";
 }

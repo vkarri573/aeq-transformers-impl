@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class BattleSpecialRuleExecutor {
     private Logger LOG = LoggerFactory.getLogger(BattleSpecialRuleExecutor.class);
 
-    public Battle executeBattleSpecialRules(Battle battle) throws Exception {
+    public Battle executeBattleSpecialRules(Battle battle) {
         String autobotName = battle.getAutobot().getName();
         String decepticonName = battle.getDecepticon().getName();
 
@@ -23,7 +23,7 @@ public class BattleSpecialRuleExecutor {
                 && isEqualToEitherOfSpecialNames(decepticonName)) {
             LOG.info("Both participants are  either Optimus Prime or Predaking ");
             battle.setBattleResult(INTERRUPTED);
-            throw new GameInterruptedException("Game interrupted: Both participants are  either Optimus Prime or Predaking");
+            throw new GameInterruptedException("Game interrupted, both participants are  either Optimus Prime or Predaking");
         } else if(isEqualToEitherOfSpecialNames(autobotName)) {
             LOG.info("Autobot is  either Optimus Prime or Predaking ");
             battle.setBattleResult(WINNER_AUTOBOT);
