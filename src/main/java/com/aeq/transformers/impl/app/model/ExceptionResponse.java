@@ -1,7 +1,10 @@
 package com.aeq.transformers.impl.app.model;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class ExceptionResponse {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date timeStamp;
     private String errorMessage;
     private String details;
