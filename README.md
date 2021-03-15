@@ -99,16 +99,16 @@ Transformers API allows the following main functionality:
 
 ### Delete a transformer by ID
 
-1) Endpoint URL: http://localhost:8080/transformers/<transformerid>
+1) Endpoint URL: http://localhost:8080/transformers/{transformerid}
 2) HTTP method: DELETE
 3) sample request: http://localhost:8080/transformers/100
 4) Sample response: {"status":"Transformer deleted"}
 
 ### Given a list of Transformer IDs, determine the winning team
 
-1) Endpoint URL: http://localhost:8080/battle/transformers?ids=<List of transformer ids>
+1) Endpoint URL: http://localhost:8080/battle/transformers?ids=[List of transformer ids]
 2) HTTP method: GET
-3) sample request: http://localhost:8080/battle/transformers?ids=100,101,102
+3) Sample request: http://localhost:8080/battle/transformers?ids=100,101,102
 4) Sample response: 
      {
        "numberOfBattles": 2,
