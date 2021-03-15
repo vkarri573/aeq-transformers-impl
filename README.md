@@ -2,11 +2,11 @@
 ## Introduction
 
 Transformers API allows the following main functionality:
-● Create a Transformer
-● Update a Transformer
-● Delete a Transformer
-● List Transformers
-● Given a list of Transformer IDs, determine the winning team
+1) Create a Transformer
+2) Update a Transformer
+3) Delete a Transformer
+4) List Transformers
+5) Given a list of Transformer IDs, determine the winning team
 
 ## Steps to build and run the unit tests
 
@@ -34,11 +34,11 @@ Transformers API allows the following main functionality:
 
 ### Create a transformer
 
-Endpoint URL: http://localhost:8080/transformers
-HTTP method: POST
-Request headers:
-   "Content-Type" : "application/json"
-JSON payload:
+1) Endpoint URL: http://localhost:8080/transformers
+2) HTTP method: POST
+3) Request headers:
+     "Content-Type" : "application/json"
+4) JSON payload:
      {
         "name": "Predaking",
         "team": "A",
@@ -51,7 +51,7 @@ JSON payload:
         "firePower": 6,
         "skill": 10
     }
-Sample response: {"status":"Transformer created"}
+5) Sample response: {"status":"Transformer created"}
 
 ## Assumptions
 
