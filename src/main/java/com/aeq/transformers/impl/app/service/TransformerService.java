@@ -18,13 +18,15 @@ public class TransformerService {
     @Autowired
     private TransformerRepository transformerRepo;
 
-    public void createTransformer(Transformer transformer){
-        transformerRepo.save(transformer);
+    public Transformer createTransformer(Transformer transformer){
+        return transformerRepo.save(transformer);
     }
 
-    public void updateTransformer(Transformer transformer){
+    public Transformer updateTransformer(Transformer transformer) {
         if(findTransformerById(transformer.getId()) != null)
-           transformerRepo.save(transformer);
+           return transformerRepo.save(transformer);
+        else
+            throw new TransformerNotFoundException("Transformer is not found with id: "+transformer.getId());
     }
 
     public Transformer findTransformerById(Long transformerId) {

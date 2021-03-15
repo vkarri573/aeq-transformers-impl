@@ -61,6 +61,25 @@ public class Transformer implements Comparable<Transformer> {
     @Max(value = 10, message = "Skill should be between 1 to 10")
     private Integer skill;
 
+    public Transformer () {}
+
+    public Transformer(Long id, String name, String team,
+                       Integer strength, Integer intelligence, Integer speed,
+                       Integer endurance, Integer rank, Integer courage,
+                       Integer firePower, Integer skill) {
+             this.id = id;
+             this.name = name;
+             this.team = team;
+             this.strength = strength;
+             this.intelligence = intelligence;
+             this.speed = speed;
+             this.endurance = endurance;
+             this.rank = rank;
+             this.courage = courage;
+             this.firePower = firePower;
+             this.skill = skill;
+    }
+
     public Integer getOverallRating() {
         return (this.strength + this.intelligence + this.speed + this.endurance + this.firePower );
     }
