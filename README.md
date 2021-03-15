@@ -121,9 +121,28 @@ Transformers API allows the following main functionality:
        "survivingMembersOfLosingTeam": []
     }
 
+### Conduct game for all transformers, determine the winning team
+
+1) Endpoint URL: http://localhost:8080/battle/transformers/all
+2) HTTP method: GET
+3) Sample response: 
+    {
+       "numberOfBattles": 3,
+       "winningTeam": "Decepticons",
+       "winnerMembersOfWinningTeam": [
+           "Optimus Prime",
+           "Megatron"
+       ],
+       "losingTeam": "Autobots",
+       "survivingMembersOfLosingTeam": [
+           "Predaking"
+       ]
+   }
+
 ## Assumptions
 
 1) Transformers in a team are sorted in decending order(10-1) by rank.
+2) Transformers are choosen for battle from both the teams is based on the position they sorted in a team. Example: Team A - position 1 (vs) Team D - Position 1 transformer
 2) Transformers who don't have fight are considered as default survivors if their team loses the game.
 
 
