@@ -37,7 +37,7 @@ Transformers API allows the following main functionality:
 1) Endpoint URL: http://localhost:8080/transformers
 2) HTTP method: POST
 3) Request headers:
-     "Content-Type" : "application/json"
+     ["Content-Type" : "application/json"]
 4) JSON payload:
      {
         "name": "Predaking",
@@ -52,6 +52,74 @@ Transformers API allows the following main functionality:
         "skill": 10
     }
 5) Sample response: {"status":"Transformer created"}
+
+### Update a transformer
+
+1) Endpoint URL: http://localhost:8080/transformers
+2) HTTP method: PUT
+3) Request headers:
+     ["Content-Type" : "application/json"]
+4) JSON payload:
+    {
+        "id": 100,
+        "name": "Soundwave",
+        "team": "D",
+        "strength": 8,
+        "intelligence": 9,
+        "speed": 2,
+        "endurance": 6,
+        "rank": 7,
+        "courage": 5,
+        "firePower": 6,
+        "skill": 10
+    }
+5) Sample response: {"status":"Transformer updated"}
+
+### Delete a transformer
+
+1) Endpoint URL: http://localhost:8080/transformers
+2) HTTP method: DELETE
+3) Request headers:
+     ["Content-Type" : "application/json"]
+4) JSON payload:
+    {
+        "id": 100,
+        "name": "Soundwave",
+        "team": "D",
+        "strength": 8,
+        "intelligence": 9,
+        "speed": 2,
+        "endurance": 6,
+        "rank": 7,
+        "courage": 5,
+        "firePower": 6,
+        "skill": 10
+    }
+5) Sample response: {"status":"Transformer deleted"}
+
+### Delete a transformer by ID
+
+1) Endpoint URL: http://localhost:8080/transformers/<transformerid>
+2) HTTP method: DELETE
+3) sample request: http://localhost:8080/transformers/100
+4) Sample response: {"status":"Transformer deleted"}
+
+### Given a list of Transformer IDs, determine the winning team
+
+1) Endpoint URL: http://localhost:8080/battle/transformers?ids=<List of transformer ids>
+2) HTTP method: GET
+3) sample request: http://localhost:8080/battle/transformers?ids=100,101,102
+4) Sample response: 
+     {
+       "numberOfBattles": 2,
+       "winningTeam": "Decepticons",
+       "winnerMembersOfWinningTeam": [
+           "Optimus Prime",
+           "Megatron"
+       ],
+       "losingTeam": "Autobots",
+       "survivingMembersOfLosingTeam": []
+    }
 
 ## Assumptions
 
