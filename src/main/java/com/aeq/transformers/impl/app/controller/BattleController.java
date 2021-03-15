@@ -13,15 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/battles")
+@RequestMapping("/battle")
 public class BattleController {
 
     @Autowired
     private BattleService battleService;
 
-    @GetMapping
-    public ResponseEntity<FinalGameResult> conductGame(@RequestParam List<Long> transformerIds) {
-        FinalGameResult finalGameResult = battleService.conductGame(transformerIds);
+    @GetMapping("/transformers")
+    public ResponseEntity<FinalGameResult> conductGameForSelectedTransformers(@RequestParam List<Long> ids) {
+        FinalGameResult finalGameResult = battleService.conductGameForSelectedTransformers(ids);
+        return new ResponseEntity<>(finalGameResult, HttpStatus.OK);
+    }
+
+    @GetMapping("/transformers/all")
+    public ResponseEntity<FinalGameResult> conductGameForAllTransformers() {
+        FinalGameResult finalGameResult = battleService.conductGameForAllTransformers();
         return new ResponseEntity<>(finalGameResult, HttpStatus.OK);
     }
 }

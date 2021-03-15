@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -25,20 +26,20 @@ public class TransformerController {
 
     @PutMapping
     public ResponseEntity<String> updateTransformer(@Valid @RequestBody Transformer transformer) {
-
-        //Long transformerId = transformer.getId();
+        validateTransformerId(transformer.getId());
         transformerService.updateTransformer(transformer);
         return new ResponseEntity<>(STATUS_TRANSFORMER_UPDATED, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping
     public ResponseEntity<String> deleteTransformer(@RequestBody Transformer transformer){
+        validateTransformerId(transformer.getId());
         transformerService.deleteTransformer(transformer);
         return new ResponseEntity<>(STATUS_TRANSFORMER_DELETED, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTransformerById(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteTransformerById(@PathVariable("id") @NotNull Long id) {
         transformerService.deleteTransformerById(id);
         return new ResponseEntity<>(STATUS_TRANSFORMER_DELETED, HttpStatus.OK);
     }
@@ -48,4 +49,6 @@ public class TransformerController {
         List<Transformer> transformerList = transformerService.getAllTransformers();
         return new ResponseEntity<>(transformerList, HttpStatus.OK);
     }
+
+    private void validateTransformerId(@NotNull(message = "Transformer Id is required") Long transformerId) {}
 }

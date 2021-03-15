@@ -33,7 +33,7 @@ public class TransformerService {
         try {
             transformer = result.get();
         } catch(NoSuchElementException exception) {
-            throw new TransformerNotFoundException("Transformer not found with id: "+transformerId);
+            throw new TransformerNotFoundException("Transformer is not found with id: "+transformerId);
         }
         return transformer;
     }

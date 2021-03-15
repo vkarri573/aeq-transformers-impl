@@ -31,7 +31,6 @@ public class TransformerGlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, WebRequest request){
-        //ExceptionResponse exceptionResponse = prepareExceptionResponse(exception, request);
         ExceptionResponse errorDetails = new ExceptionResponse(new Date(), "Validation Failed",
                 exception.getBindingResult().toString());
         return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);

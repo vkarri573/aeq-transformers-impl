@@ -35,9 +35,19 @@ public class BattleService {
         return transformersList;
     }
 
-    public FinalGameResult conductGame(List<Long> transformerIds) {
-        GameSummary gameSummary = new GameSummary();
+    public FinalGameResult conductGameForAllTransformers() {
+        List<Transformer> transformersList = new ArrayList<>();
+        battleRepository.findAll().forEach(transformersList::add);
+        return conductGame(transformersList);
+    }
+
+    public FinalGameResult conductGameForSelectedTransformers(List<Long> transformerIds) {
         List<Transformer> transformersList = getTransformersByIds(transformerIds);
+        return conductGame(transformersList);
+    }
+
+    public FinalGameResult conductGame(List<Transformer> transformersList) {
+        GameSummary gameSummary = new GameSummary();
 
         LOG.info("Transformers size: "+transformersList.size());
         List<Transformer> autobots = transformersList.stream().filter(e -> TEAM_A.equals(e.getTeam())).collect(Collectors.toList());
