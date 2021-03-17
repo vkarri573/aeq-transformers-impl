@@ -104,6 +104,56 @@ Transformers API allows the following main functionality:
 3) sample request: http://localhost:8080/transformers/100
 4) Sample response: {"status":"Transformer deleted"}
 
+### List Transformers
+
+1) Endpoint URL: http://localhost:8080/transformers
+2) HTTP method: GET
+3) Sample response: 
+   [
+     {
+        "id": 103,
+        "name": "Optimus Prime",
+        "team": "D",
+        "strength": 5,
+        "intelligence": 3,
+        "speed": 7,
+        "endurance": 9,
+        "rank": 10,
+        "courage": 6,
+        "firePower": 1,
+        "skill": 3,
+        "overallRating": 25
+     },
+     {
+        "id": 104,
+        "name": "Megatron",
+        "team": "D",
+        "strength": 10,
+        "intelligence": 5,
+        "speed": 2,
+        "endurance": 8,
+        "rank": 8,
+        "courage": 7,
+        "firePower": 10,
+        "skill": 2,
+        "overallRating": 35
+     },
+     {
+        "id": 105,
+        "name": "Predaking",
+        "team": "A",
+        "strength": 2,
+        "intelligence": 1,
+        "speed": 2,
+        "endurance": 4,
+        "rank": 1,
+        "courage": 6,
+        "firePower": 3,
+        "skill": 1,
+        "overallRating": 12
+     }
+   ]
+
 ### Given a list of Transformer IDs, determine the winning team
 
 1) Endpoint URL: http://localhost:8080/battle/transformers?ids=[List of transformer ids]
