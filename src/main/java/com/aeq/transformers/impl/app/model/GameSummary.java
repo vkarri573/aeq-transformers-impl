@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Uses to save battle results during the game.
+ */
 @Component
 public class GameSummary {
     private List<Transformer> autobots;

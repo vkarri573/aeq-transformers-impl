@@ -1,7 +1,11 @@
 package com.aeq.transformers.impl.app.constants;
 
-import jdk.nashorn.internal.objects.annotations.Getter;
-
+/**
+ * Represents special Transformers.
+ *
+ * 1. Optimus Prime
+ * 2. Predaking
+ */
 public enum SuperTransformer {
     OPTIMUS_PRIME("Optimus Prime"),
     PREDAKING("Predaking");

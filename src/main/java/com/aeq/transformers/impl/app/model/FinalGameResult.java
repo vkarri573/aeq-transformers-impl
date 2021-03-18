@@ -5,6 +5,15 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Uses to save final statistics of the game after evaluation.
+ *
+ * Number of battles
+ * Winning team
+ * Winners from winning team
+ * Losing team
+ * Survivors from losing team
+ */
 @Component
 public class FinalGameResult {
 

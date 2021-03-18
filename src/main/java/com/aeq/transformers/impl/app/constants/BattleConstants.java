@@ -1,5 +1,8 @@
 package com.aeq.transformers.impl.app.constants;
 
+/**
+ * Constants required to build API.
+ */
 public class BattleConstants {
     public static final Integer COURAGE_MIN_DIFF = 4;
     public static final Integer STRENGTH_MIN_DIFF = 3;

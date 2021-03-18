@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 import static com.aeq.transformers.impl.app.constants.BattleConstants.*;
 import static com.aeq.transformers.impl.app.model.BattleResult.*;
 
+/**
+ * Provides business logic for Battle API.
+ */
 @Service
 public class BattleService {
 
@@ -29,30 +32,55 @@ public class BattleService {
     private BattleRuleExecutor basicRuleExecutor;
     private Logger LOG = LoggerFactory.getLogger(BattleService.class);
 
+    /**
+     * Fetches requested transformers.
+     *
+     * @param ids list of transformer ids to retrieve.
+     * @return list of transformers retrieved from database.
+     */
     public List<Transformer> getTransformersByIds(List<Long> ids) {
         List<Transformer> transformersList = new ArrayList<>();
         battleRepository.findAllById((Iterable<Long>) ids).forEach(transformersList::add);
         return transformersList;
     }
 
+    /**
+     * Conducts game for all transformers.
+     *
+     * @return final game result after evaluation.
+     */
     public FinalGameResult conductGameForAllTransformers() {
         List<Transformer> transformersList = new ArrayList<>();
         battleRepository.findAll().forEach(transformersList::add);
         return conductGame(transformersList);
     }
 
+    /**
+     * Conducts game for selected transformers.
+     *
+     * @param transformerIds List of transformers to conduct game.
+     * @return final game result after evaluation.
+     */
     public FinalGameResult conductGameForSelectedTransformers(List<Long> transformerIds) {
         List<Transformer> transformersList = getTransformersByIds(transformerIds);
         return conductGame(transformersList);
     }
 
+    /**
+     * Conduct game between transformers.
+     *
+     * @param transformersList List of transformers participate in the game.
+     * @return Final game result.
+     */
     public FinalGameResult conductGame(List<Transformer> transformersList) {
         GameSummary gameSummary = new GameSummary();
 
         LOG.info("Transformers size: "+transformersList.size());
+        // Filter Autobots & Decepticons
         List<Transformer> autobots = transformersList.stream().filter(e -> TEAM_A.equals(e.getTeam())).collect(Collectors.toList());
         List<Transformer> decepticons = transformersList.stream().filter(e -> TEAM_D.equals(e.getTeam())).collect(Collectors.toList());
 
+        // Sort by rank
         Collections.sort(autobots);
         Collections.sort(decepticons);
 
@@ -64,9 +92,18 @@ public class BattleService {
 
         gameSummary = startGame(autobots, decepticons, gameSummary);
 
+        // Evaluate game summary and return prepared result
         return evaluateGameSummary(gameSummary);
     }
 
+    /**
+     * Starts game.
+     *
+     * @param autobots list of Autobots participate in the game.
+     * @param decepticons list of Decepticons participate in the game.
+     * @param gameSummary Game Summary.
+     * @return Summary after the game completes.
+     */
    public GameSummary startGame(List<Transformer> autobots , List<Transformer> decepticons, GameSummary gameSummary) {
        int noOfBattles = calculateNumberOfBattles(autobots, decepticons);
        LOG.info("Number of battles: "+noOfBattles);
@@ -80,17 +117,26 @@ public class BattleService {
            battle.setDecepticon(decepticons.get(battleCounter));
 
            LOG.info("Battle between Autobot: "+battle.getAutobot().getName()+" and Decepticon: "+battle.getDecepticon().getName());
+           // Execute battle special rules
            battle = specialRuleExecutor.executeBattleSpecialRules(battle);
 
+           // Execute battle basic rules if result is empty after execution of special rules
            if(isBattleResultEmpty(battle))
               battle = basicRuleExecutor.executeBattleBasicRules(battle);
 
+           //Evaluate battle result after executing rules and save each battle result in the summary.
            evaluateBattleResult(battle, gameSummary);
            battleCounter++;
        }
        return gameSummary;
    }
 
+    /**
+     * Evaluates each battle result and saves result in summary.
+     *
+     * @param battle contains battle details.
+     * @param gameSummary contains game summary.
+     */
    private void evaluateBattleResult(Battle battle, GameSummary gameSummary) {
         BattleResult battleResult = battle.getBattleResult();
         if(battleResult == WINNER_AUTOBOT) {
@@ -106,6 +152,12 @@ public class BattleService {
         }
    }
 
+    /**
+     * Evaluates summary of the game which contains each battle result and prepares final result.
+     *
+     * @param gameSummary contains summary.
+     * @return final result of the game.
+     */
    public FinalGameResult evaluateGameSummary(GameSummary gameSummary) {
         LOG.info("Evaluate game summary and prepare final result");
        FinalGameResult finalGameResult = new FinalGameResult();
@@ -148,6 +200,13 @@ public class BattleService {
        return finalGameResult;
    }
 
+    /**
+     * Derives default skipped survivors from loosing team who doesn't have fight.
+     *
+     * @param noOfBattles number of battles conducted.
+     * @param loosingTeam list of loosing team transformers.
+     * @return list of default survivors
+     */
    private List<String> deriveDefaultSkippedSurvivors(int noOfBattles, List<Transformer> loosingTeam) {
        List<String> defaultSkippedSurvivors = new ArrayList<>();
         if(loosingTeam.size() > noOfBattles) {
@@ -156,10 +215,24 @@ public class BattleService {
         return defaultSkippedSurvivors;
    }
 
+    /**
+     * Utility to calculate number of battles to be conducted in a game.
+     *
+     * @param autobots contains list of Autobots.
+     * @param decepticons contains list of Decepticons.
+     * @return number of battles.
+     */
    private int calculateNumberOfBattles(List<Transformer> autobots , List<Transformer> decepticons) {
       return (autobots.size() > decepticons.size() ? decepticons.size() : autobots.size());
    }
 
+    /**
+     * Utility to check battle result.
+     *
+     * @param battle contains details of the battle.
+     * @return true if battle result is empty,
+     *         otherwise returns false.
+     */
     private boolean isBattleResultEmpty(Battle battle) {
         return ObjectUtils.isEmpty(battle.getBattleResult());
     }

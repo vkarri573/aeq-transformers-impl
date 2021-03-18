@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
+/**
+ * Entity to represent a Transformer.
+ */
 @Entity
 public class Transformer implements Comparable<Transformer> {
 

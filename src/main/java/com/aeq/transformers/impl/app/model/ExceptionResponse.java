@@ -3,6 +3,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
+/**
+ * Model to save consolidated exception details and return to consumer.
+ */
 public class ExceptionResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date timeStamp;
